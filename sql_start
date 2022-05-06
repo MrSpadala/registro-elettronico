@@ -1,2 +1,2 @@
 
-docker run --rm -it -e MYSQL_ROOT_PASSWORD=cykablyat --name registro_sql mysql/mysql-server
+docker run --rm -it --network host -e MYSQL_ROOT_PASSWORD=cykablyat --name registro_sql mysql/mysql-server

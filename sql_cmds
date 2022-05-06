@@ -4,6 +4,9 @@
 create database registro;
 use registro;
 
+CREATE USER 'my-app-user'@'%' IDENTIFIED WITH mysql_native_password BY 'my-app-password';
+GRANT ALL ON *.* TO 'my-app-user'@'%';
+
 create table users ( userid int NOT NULL AUTO_INCREMENT, username varchar(255) NOT NULL, password varchar(255) NOT NULL, isadmin bool, PRIMARY KEY (userid));
 
 create table grades ( gradeid int NOT NULL AUTO_INCREMENT, name varchar(255) NOT NULL, surname varchar(255) NOT NULL, subject varchar(255) NOT NULL, grade int, PRIMARY KEY(gradeid) );

@@ -8,9 +8,9 @@ const mysql_1 = __importDefault(require("mysql"));
 const express_session_1 = __importDefault(require("express-session"));
 const path_1 = require("path");
 var connection = mysql_1.default.createConnection({
-    host: '192.168.1.100',
-    user: 'root',
-    password: 'cykablyat',
+    host: 'localhost',
+    user: 'my-app-user',
+    password: 'my-app-password',
     database: 'registro'
 });
 connection.connect((err) => {

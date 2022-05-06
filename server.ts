@@ -4,9 +4,9 @@ import session from 'express-session'
 import { join } from 'path'
 
 var connection = mysql.createConnection({
-  host     : '192.168.1.100',
-  user     : 'root',
-  password : 'cykablyat',
+  host     : 'localhost',
+  user     : 'my-app-user',
+  password : 'my-app-password',
   database : 'registro'
 });
  
