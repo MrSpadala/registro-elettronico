@@ -26,8 +26,7 @@ declare module 'express-session' {
     interface SessionData {
         user: {
             admin: boolean,
-            name: string,
-            surname: string,
+            username: string,
         };
     }
 }
@@ -53,6 +52,16 @@ app.get('/home_page', (req, res) => {
     res.status(200).sendFile(join(__dirname, 'home_page.html'))
 })
 
+app.get('/grades', (req,res) => {
+    connection.query("SELECT * FROM grades", (err, response, fields) => {
+        //console.log(err)
+        console.log(response)
+        //console.log(fields)
+        res.status(200).send(JSON.stringify(response))
+    })
+})
+
+
 app.post('/login', (req, res) => {
     const {name, password} = req.body
     if(!name || !password) {
@@ -60,14 +69,36 @@ app.post('/login', (req, res) => {
     }
     else {
         if (req.session.user == undefined) {
-            req.session.user = {
-                name,
-                surname: "prova",
-                admin: false
-            }
-        } 
-        res.status(200).send()
+            let query = `SELECT * FROM users WHERE username=\"${name}\" AND password=\"${password}\"`
+            console.log("Submitted query: " + query)
+            connection.query(query, (err, response, fields) => {
+                if(err) {
+                    console.log(err)
+                    res.status(400).send("DB error")
+                }
+                else {
+                    console.log(response)
+                    if(response.length > 0) {
+                        req.session.user = {
+                            username: response[0].username,
+                            admin: response[0].isadmin == 1
+                        }
+                        res.status(200).send()
+                    }
+                    else res.status(400).send("Wrong credentials")
+                }
+                //console.log(err)
+                //console.log(response)
+                //console.log(fields)
+            })
+        }
     }
+})
+
+app.delete('/logout', (req,res) => {
+    req.session.destroy(() => {
+        res.status(200).send()
+    })
 })
 
 app.listen(8080, () => {

@@ -9,6 +9,9 @@
 </head>
 <body>
     <div>
+        <div>
+            Registro Elettronico - Login
+        </div>
         <form method="post" action="/login">
             <input id="name" type="text" name="username" placeholder="username"><br>
             <input id="pass" type="password" name="password" placeholder="password"><br>
@@ -37,6 +40,10 @@
 
             if (response.ok) {
                 document.location.href = "/home_page"
+            }
+            else {
+                let msg = await response.text();
+                alert(msg)
             }
         }
     </script>

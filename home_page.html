@@ -9,13 +9,40 @@
 </head>
 <body>
     <div>
-        Sono una home page
+        Voti:
+        <div>
+            <table id="grades">
+                <tr>
+                    <th>Student</th>
+                    <th>Subject</th>
+                    <th>Grade</th>
+                </tr>
+            </table>
+        </div>
+        <button onclick="logout()">Logout</button>
     </div>
     <script>
         (async () => {
-            let response = await fetch('/grades_table')
-            console.log(response)
+            let response = await fetch('/grades')
+            let jsonBody = await response.json()
+            let grades_table = document.getElementById('grades')
+            for(let line of jsonBody) {
+                grades_table.innerHTML += `<tr>
+                        <th>${line.name} ${line.surname}</th>
+                        <th>${line.subject}</th>
+                        <th>${line.grade}</th>
+                    </tr>
+                `}
         })()
+
+        function logout() {
+            (async () => {
+                let response = await fetch("/logout", {
+                    method: "DELETE",
+                })
+                document.location.href = "/"
+            })()
+        }
     </script>
 </body>
 </html>
