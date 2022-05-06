@@ -1,0 +1,19 @@
+
+# copy and paste all of this inside the mysql console
+
+create database registro;
+use registro;
+
+create table users ( userid int NOT NULL AUTO_INCREMENT, username varchar(255) NOT NULL, password varchar(255) NOT NULL, isadmin bool, PRIMARY KEY (userid));
+
+create table grades ( gradeid int NOT NULL AUTO_INCREMENT, name varchar(255) NOT NULL, surname varchar(255) NOT NULL, subject varchar(255) NOT NULL, grade int, PRIMARY KEY(gradeid) );
+
+insert into users (username, password, isadmin) values ("professore@gmail.com", "adminadmin", 1);
+insert into users (username, password, isadmin) values ("studente@gmail.com", "ciaociao", 0);
+
+insert into grades (name, surname, subject, grade) values ("Pierluigi", "Locatelli", "Scienze", 8);
+insert into grades (name, surname, subject, grade) values ("Andrea", "Lacava", "Informatica", 10);
+insert into grades (name, surname, subject, grade) values ("Pietro", "Spadaccino", "Latino", 4);
+
+select * from users;
+select * from grades;
