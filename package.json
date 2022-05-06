@@ -1,0 +1,13 @@
+{
+  "dependencies": {
+    "@types/express": "^4.17.13",
+    "@types/express-session": "^1.17.4",
+    "@types/mysql": "^2.15.21",
+    "@types/node": "^17.0.31",
+    "@types/sqlite3": "^3.1.8",
+    "express": "^4.18.1",
+    "express-session": "^1.17.2",
+    "mysql": "^2.18.1",
+    "sqlite3": "^5.0.8"
+  }
+}

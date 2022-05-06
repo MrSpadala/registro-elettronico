@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset='utf-8'>
+    <meta http-equiv='X-UA-Compatible' content='IE=edge'>
+    <title>Registro Elettronico - Login</title>
+    <meta name='viewport' content='width=device-width, initial-scale=1'>
+    <link rel='stylesheet' type='text/css' media='screen' href='main.css'>
+</head>
+<body>
+    <div>
+        <form method="post" action="/login">
+            <input id="name" type="text" name="username" placeholder="username"><br>
+            <input id="pass" type="password" name="password" placeholder="password"><br>
+            <input type="button" onclick="submitForm();" value="Invia" >
+        </form>
+    </div>
+    <script>
+        async function submitForm() {
+            let req_body = {
+                name:     document.getElementById("name").value,
+                password: document.getElementById("pass").value
+            }
+
+            if(req_body.name == "preside") {
+                alert("Non puoi loggare usando l'utente preside, puoi loggare come preside solo avendo il suo cookie")
+                return
+            }
+
+            let response = await fetch("/login", {
+                method: "POST",
+                body: JSON.stringify(req_body),
+                headers: {
+                    "Content-Type": "application/json"
+                }
+            })
+
+            if (response.ok) {
+                document.location.href = "/home_page"
+            }
+        }
+    </script>
+</body>
+</html>
