@@ -26,62 +26,49 @@ app.use((0, express_session_1.default)({
 }));
 app.use((req, res, next) => {
     let allowed_without_session = ["/", "/login"];
-    if (allowed_without_session.includes(req.url) || req.session.user) {
+    if ((!req.session.user && allowed_without_session.includes(req.url)) || req.session.user)
         next();
-    }
-    else {
+    else
         res.redirect("/");
-    }
 });
 app.get('/', (req, res) => {
     if (req.session.user)
         res.redirect('/home_page');
-    else {
+    else
         res.status(200).sendFile((0, path_1.join)(__dirname, 'login.html'));
-    }
 });
 app.get('/home_page', (req, res) => {
     res.status(200).sendFile((0, path_1.join)(__dirname, 'home_page.html'));
 });
 app.get('/grades', (req, res) => {
-    connection.query("SELECT * FROM grades", (err, response, fields) => {
-        //console.log(err)
-        console.log(response);
-        //console.log(fields)
-        res.status(200).send(JSON.stringify(response));
-    });
+    connection.query("SELECT * FROM grades", (err, response, fields) => res.status(200).send(JSON.stringify(response)));
 });
 app.post('/login', (req, res) => {
     const { name, password } = req.body;
-    if (!name || !password) {
+    if (!name || !password)
         res.status(400).send("Missing username or password!");
-    }
-    else {
-        if (req.session.user == undefined) {
-            let query = `SELECT * FROM users WHERE username=\"${name}\" AND password=\"${password}\"`;
-            console.log("Submitted query: " + query);
-            connection.query(query, (err, response, fields) => {
-                if (err) {
-                    console.log(err);
-                    res.status(400).send("DB error");
-                }
-                else {
-                    console.log(response);
-                    if (response.length > 0) {
-                        req.session.user = {
-                            username: response[0].username,
-                            admin: response[0].isadmin == 1
-                        };
-                        res.status(200).send();
-                    }
-                    else
-                        res.status(400).send("Wrong credentials");
-                }
-                //console.log(err)
+    else if (req.session.user == undefined) {
+        let query = `SELECT * FROM users WHERE username=\"${name}\" AND password=\"${password}\"`;
+        console.log("Submitted query: " + query);
+        connection.query(query, (err, response, fields) => {
+            //console.log(fields)
+            if (err) {
+                console.log(err);
+                res.status(400).send("DB error");
+            }
+            else {
                 //console.log(response)
-                //console.log(fields)
-            });
-        }
+                if (response.length != 0) {
+                    req.session.user = {
+                        username: response[0].username,
+                        admin: response[0].isadmin == 1
+                    };
+                    res.status(200).send();
+                }
+                else
+                    res.status(400).send("Wrong credentials");
+            }
+        });
     }
 });
 app.delete('/logout', (req, res) => {
@@ -89,6 +76,7 @@ app.delete('/logout', (req, res) => {
         res.status(200).send();
     });
 });
-app.listen(8080, () => {
-    console.log('diopo');
+const port = 8080;
+app.listen(port, () => {
+    console.log(`Server listening on port ${port}`);
 });

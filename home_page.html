@@ -1,12 +1,32 @@
 <!DOCTYPE html>
 <html>
+
 <head>
     <meta charset='utf-8'>
     <meta http-equiv='X-UA-Compatible' content='IE=edge'>
     <title>Registro Elettronico - Login</title>
     <meta name='viewport' content='width=device-width, initial-scale=1'>
     <link rel='stylesheet' type='text/css' media='screen' href='main.css'>
+    <style>
+        table {
+            font-family: arial, sans-serif;
+            border-collapse: collapse;
+            width: 50%;
+        }
+
+        td,
+        th {
+            border: 1px solid #dddddd;
+            text-align: left;
+            padding: 8px;
+        }
+
+        tr:nth-child(even) {
+            background-color: #dddddd;
+        }
+    </style>
 </head>
+
 <body>
     <div>
         Voti:
@@ -26,11 +46,11 @@
             let response = await fetch('/grades')
             let jsonBody = await response.json()
             let grades_table = document.getElementById('grades')
-            for(let line of jsonBody) {
+            for (let line of jsonBody) {
                 grades_table.innerHTML += `<tr>
-                        <th>${line.name} ${line.surname}</th>
-                        <th>${line.subject}</th>
-                        <th>${line.grade}</th>
+                        <td>${line.name} ${line.surname}</td>
+                        <td>${line.subject}</td>
+                        <td>${line.grade}</td>
                     </tr>
                 `}
         })()
@@ -45,4 +65,5 @@
         }
     </script>
 </body>
+
 </html>
