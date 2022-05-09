@@ -1,2 +1,19 @@
+# start docker container
+echo "Starting docker..."
+docker run --rm -d --network host -e MYSQL_ROOT_PASSWORD=cykablyat --name registro_sql mysql/mysql-server
 
-docker run --rm -it --network host -e MYSQL_ROOT_PASSWORD=cykablyat --name registro_sql mysql/mysql-server
+# initialize sql records
+echo "Copying SQL commands to dest..."
+docker cp sql_cmds registro_sql:/
+
+# loop until the container is started
+status=1
+while [ "$status" != "0" ]; do
+	sleep 1
+	echo -n "Trying to connect... "
+	docker exec -it registro_sql bash -c "mysql -uroot --password=cykablyat < /sql_cmds" > /dev/null
+	status=$?
+	echo "status $status"
+done
+
+echo "Done!"
