@@ -1,2 +1,2 @@
 
-docker exec -it registro_sql bash -c "mysql -uroot --password=cykablyat"
+docker exec -it registro_sql bash -c "mysql registro -uroot --password=cykablyat"
