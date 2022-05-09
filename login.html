@@ -25,10 +25,10 @@
                 password: document.getElementById("pass").value
             }
 
-            if(req_body.name == "preside") {
-                alert("Non puoi loggare usando l'utente preside, puoi loggare come preside solo avendo il suo cookie")
-                return
-            }
+            //if(req_body.name == "preside") {
+            //    alert("Non puoi loggare usando l'utente preside, puoi loggare come preside solo avendo il suo cookie")
+            //    return
+            //}
 
             let response = await fetch("/login", {
                 method: "POST",

@@ -1,10 +1,9 @@
 <!DOCTYPE html>
 <html>
-
 <head>
     <meta charset='utf-8'>
     <meta http-equiv='X-UA-Compatible' content='IE=edge'>
-    <title>Registro Elettronico - Login</title>
+    <title>Registro Elettronico - Home Page</title>
     <meta name='viewport' content='width=device-width, initial-scale=1'>
     <style>
         table {
@@ -42,6 +41,7 @@
 
         </div>        
         <br><br>
+        <div>Aggiungi un nuovo voto:</div>
         <div id="add_grade" style="display: none;">
             <form method="post" action="/createGrade">
                 <input id="name" type="text" name="name" placeholder="name"><br>
@@ -83,22 +83,19 @@
             document.getElementById('admin').innerText = jsonBody.user.admin ? "You are admin" : ""
             for (let grade of jsonBody.grades) {
                 grades_table.innerHTML += `<tr>
-                        <td>${grade.name} ${grade.surname}</td>
-                        <td>${grade.subject}</td>
-                        <td>${grade.grade}</td>
-                        ${
-                            jsonBody.user.admin ? 
-                                `<td><button onclick="deleteGrade(${grade.gradeid})">X</button></td>` 
-                                : ''
-                        }
-                    </tr>`
+                    <td>${grade.name} ${grade.surname}</td>
+                    <td>${grade.subject}</td>
+                    <td>${grade.grade}</td>
+                    ${jsonBody.user.admin ? `<td><button onclick="deleteGrade(${grade.gradeid})">X</button></td>` : ''}
+                </tr>`
             }
             
             let notes_div = document.getElementById('notes')
             for(let note of jsonBody.notes) {
-                notes_div.innerHTML += `
-                    <div class="note">${note.text}</div>
-                `
+                let new_note = document.createElement('div')
+                new_note.classList.add('note')
+                new_note.innerHTML = note.text
+                notes_div.appendChild(new_note)
             }
             if(jsonBody.user.admin) {
                 document.getElementById('add_note').style.display = 'block'
@@ -174,5 +171,4 @@
         }
     </script>
 </body>
-
 </html>
