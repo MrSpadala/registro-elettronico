@@ -6,7 +6,6 @@
     <meta http-equiv='X-UA-Compatible' content='IE=edge'>
     <title>Registro Elettronico - Login</title>
     <meta name='viewport' content='width=device-width, initial-scale=1'>
-    <link rel='stylesheet' type='text/css' media='screen' href='main.css'>
     <style>
         table {
             font-family: arial, sans-serif;
@@ -24,13 +23,37 @@
         tr:nth-child(even) {
             background-color: #dddddd;
         }
+
+        .note {
+            border-style: solid;
+            border-width: 1px;
+            border-bottom-color: #000;
+            margin-bottom: 1rem;
+        }
     </style>
 </head>
 
 <body>
     <div>
-        Voti:
         <div>
+            You are logged in as: <span id="username"></span>
+            <div id="admin"></div>
+            <button onclick="logout()">Logout</button>
+
+        </div>        
+        <br><br>
+        <div id="add_grade" style="display: none;">
+            <form method="post" action="/createGrade">
+                <input id="name" type="text" name="name" placeholder="name"><br>
+                <input id="surname" type="text" name="surname" placeholder="surname"><br>
+                <input id="subject" type="text" name="subject" placeholder="subject"><br>
+                <input id="grade" min="2" max="10" type="number" name="grade" placeholder="grade"><br>
+                <input type="button" onclick="submitGrade();" value="Invia" >
+            </form>
+        </div>
+        <br>
+        <div>
+            Voti:
             <table id="grades">
                 <tr>
                     <th>Student</th>
@@ -39,29 +62,115 @@
                 </tr>
             </table>
         </div>
-        <button onclick="logout()">Logout</button>
+        <br><br>
+        <div>Avvisi per la classe</div>
+        <div id="notes">
+
+        </div>
+        <div id="add_note" style="display: none;">
+            <form method="post" action="/createNote">
+                <textarea id="textarea" rows="5" cols="40" placeholder="Inserisci avviso..."></textarea>
+                <input type="button" onclick="submitNote();" value="Invia" >
+            </form>
+        </div>
     </div>
     <script>
         (async () => {
-            let response = await fetch('/grades')
+            let response = await fetch('/home_page_infos')
             let jsonBody = await response.json()
             let grades_table = document.getElementById('grades')
-            for (let line of jsonBody) {
+            document.getElementById('username').innerText = jsonBody.user.username
+            document.getElementById('admin').innerText = jsonBody.user.admin ? "You are admin" : ""
+            for (let grade of jsonBody.grades) {
                 grades_table.innerHTML += `<tr>
-                        <td>${line.name} ${line.surname}</td>
-                        <td>${line.subject}</td>
-                        <td>${line.grade}</td>
-                    </tr>
-                `}
+                        <td>${grade.name} ${grade.surname}</td>
+                        <td>${grade.subject}</td>
+                        <td>${grade.grade}</td>
+                        ${
+                            jsonBody.user.admin ? 
+                                `<td><button onclick="deleteGrade(${grade.gradeid})">X</button></td>` 
+                                : ''
+                        }
+                    </tr>`
+            }
+            
+            let notes_div = document.getElementById('notes')
+            for(let note of jsonBody.notes) {
+                notes_div.innerHTML += `
+                    <div class="note">${note.text}</div>
+                `
+            }
+            if(jsonBody.user.admin) {
+                document.getElementById('add_note').style.display = 'block'
+                document.getElementById('add_grade').style.display = 'block'
+            }
         })()
 
-        function logout() {
-            (async () => {
-                let response = await fetch("/logout", {
-                    method: "DELETE",
-                })
-                document.location.href = "/"
-            })()
+        async function logout() {
+            let response = await fetch("/logout", {
+                method: "DELETE",
+            })
+            document.location.href = "/"
+        }
+
+        async function deleteGrade(grade_id) {
+            let response = await fetch(`/deleteGrade/${grade_id}`, {
+                method: "DELETE",
+            })
+            if(response.ok) {
+                document.location.reload(true)
+            }
+            else {
+                let msg = await response.text();
+                alert(msg)
+            }
+        }
+
+        async function submitNote() {
+            let req_body = {
+                note: document.getElementById("textarea").value,
+            }
+
+            let response = await fetch("/createNote", {
+                method: "POST",
+                body: JSON.stringify(req_body),
+                headers: {
+                    "Content-Type": "application/json"
+                }
+            })
+
+            if (response.ok) {
+                document.location.reload()
+            }
+            else {
+                let msg = await response.text();
+                alert(msg)
+            }
+        }
+        
+        async function submitGrade() {
+            let req_body = {
+                name: document.getElementById("name").value,
+                surname: document.getElementById("surname").value,
+                subject: document.getElementById("subject").value,
+                grade: document.getElementById("grade").value,
+            }
+
+            let response = await fetch("/createGrade", {
+                method: "POST",
+                body: JSON.stringify(req_body),
+                headers: {
+                    "Content-Type": "application/json"
+                }
+            })
+
+            if (response.ok) {
+                document.location.reload()
+            }
+            else {
+                let msg = await response.text();
+                alert(msg)
+            }
         }
     </script>
 </body>

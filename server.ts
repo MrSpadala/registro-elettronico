@@ -46,8 +46,17 @@ app.get('/home_page', (req, res) => {
     res.status(200).sendFile(join(__dirname, 'home_page.html'))
 })
 
-app.get('/grades', (req, res) => {
-    connection.query("SELECT * FROM grades", (err, response, fields) => res.status(200).send(JSON.stringify(response)))
+app.get('/home_page_infos', (req, res) => {
+    connection.query("SELECT * FROM grades", (err, response_grades, fields) => {
+        connection.query("SELECT * FROM notes", (err, response_notes, fields) => {
+            let body = {
+                grades: response_grades,
+                user: req.session.user,
+                notes: response_notes
+            }
+            res.status(200).send(JSON.stringify(body))
+        })
+    })
 })
 
 
@@ -78,10 +87,76 @@ app.post('/login', (req, res) => {
     }
 })
 
+app.post('/createGrade', (req, res) => {
+    if(req.session.user?.admin) {
+        let { name, surname, subject, grade } = req.body
+        let query = `INSERT INTO grades (name, surname, subject, grade) VALUES ("${name}", "${surname}", "${subject}", ${grade});`
+        console.log("Submitted query: " + query)
+        connection.query(query, (err, response, fields) => {
+            if(err) {
+                console.log(err)
+                res.status(400).send("DB error")
+            }
+            else {
+                //console.log(response)
+                res.status(200).send()
+            }
+        })
+    }
+    else {
+        res.status(403).send('Error: you are not an admin')
+    }
+})
+
+app.delete('/deleteGrade/(:gradeid)', (req, res) => {
+    if(req.session.user?.admin) {
+        let query = `DELETE FROM grades WHERE gradeid = ${req.params.gradeid}`
+        console.log("Submitted query: " + query)
+        connection.query(query, (err, response, fields) => {
+            if(err) {
+                console.log(err)
+                res.status(400).send("DB error")
+            }
+            else {
+                //console.log(response)
+                if(response.affectedRows == 1) {
+                    res.status(200).send()
+                }
+                else {
+                    res.status(400).send(`Error: gradeid ${req.params.gradeid} not found`)
+                }
+            }
+        })
+    }
+    else {
+        res.status(403).send('Error: you are not an admin')
+    }
+})
+
 app.delete('/logout', (req, res) => {
     req.session.destroy(() => {
         res.status(200).send()
     })
+})
+
+app.post('/createNote', (req, res) => {
+    if(req.session.user?.admin) {
+        let query = `INSERT INTO notes (text) VALUES ("${req.body.note}");`
+        console.log("Submitted query: " + query)
+        connection.query(query, (err, response, fields) => {
+            if(err) {
+                console.log(err)
+                res.status(400).send("DB error")
+            }
+            else {
+                //console.log(response)
+                res.status(200).send()
+            }
+        })
+    }
+    else {
+        res.status(403).send('Error: you are not an admin')
+    }
 })
 
 const port = 8080
