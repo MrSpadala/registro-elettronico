@@ -11,7 +11,8 @@ var connection = mysql_1.default.createConnection({
     host: 'localhost',
     user: 'my-app-user',
     password: 'my-app-password',
-    database: 'registro'
+    database: 'registro',
+    charset: 'utf8_general_ci',
 });
 connection.connect((err) => {
     if (err)
@@ -48,7 +49,8 @@ app.get('/home_page_infos', (req, res) => {
                 user: req.session.user,
                 notes: response_notes
             };
-            res.status(200).send(JSON.stringify(body));
+            console.log(body);
+            res.setHeader("Content-Type", "application/json; charset=utf-8").status(200).send(JSON.stringify(body));
         });
     });
 });
