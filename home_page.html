@@ -36,17 +36,21 @@
 <body>
     <div>
         <div>
-            You are logged in as: <span id="username"></span>
+            You are logged in as: <span id="hello_username"></span>
             <div id="admin"></div>
             <button onclick="logout()">Logout</button>
 
         </div>        
         <br><br>
+        <div>
+            Ciao <b><span id="hello_name"></span> <span id="hello_surname"></span></b>!
+        </div>
+        <br>
+
         <div id="add_grade" style="display: none;">
             <div>Aggiungi un nuovo voto:</div>
             <form method="post" action="/createGrade">
-                <input id="name" type="text" name="name" placeholder="name"><br>
-                <input id="surname" type="text" name="surname" placeholder="surname"><br>
+                <input id="username" type="text" name="username" placeholder="username"><br>
                 <input id="subject" type="text" name="subject" placeholder="subject"><br>
                 <input id="grade" min="2" max="10" type="number" name="grade" placeholder="grade"><br>
                 <input type="button" onclick="submitGrade();" value="Invia" >
@@ -57,7 +61,6 @@
             Voti:
             <table id="grades">
                 <tr>
-                    <th>Student</th>
                     <th>Subject</th>
                     <th>Grade</th>
                 </tr>
@@ -81,10 +84,11 @@
             let jsonBody = await response.json()
             let grades_table = document.getElementById('grades')
             document.getElementById('username').innerText = jsonBody.user.username
+            document.getElementById('hello_name').innerText = jsonBody.user.name
+            document.getElementById('hello_surname').innerText = jsonBody.user.surname
             document.getElementById('admin').innerText = jsonBody.user.admin ? "You are admin" : ""
             for (let grade of jsonBody.grades) {
                 grades_table.innerHTML += `<tr>
-                    <td>${grade.name} ${grade.surname}</td>
                     <td>${grade.subject}</td>
                     <td>${grade.grade}</td>
                     ${jsonBody.user.admin ? `<td><button onclick="deleteGrade(${grade.gradeid})">X</button></td>` : ''}
@@ -154,12 +158,11 @@
         
         async function submitGrade() {
             let req_body = {
-                name: document.getElementById("name").value,
-                surname: document.getElementById("surname").value,
+                username: document.getElementById("username").value,
                 subject: document.getElementById("subject").value,
                 grade: document.getElementById("grade").value,
             }
-            if(!req_body.name || !req_body.surname || !req_body.subject || !req_body.grade) {
+            if(!req_body.username || !req_body.subject || !req_body.grade) {
                 alert('Error, missing fields in grade')
             }
             else {

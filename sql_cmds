@@ -7,29 +7,49 @@ use registro;
 CREATE USER 'my-app-user'@'%' IDENTIFIED WITH mysql_native_password BY 'my-app-password';
 GRANT ALL ON *.* TO 'my-app-user'@'%';
 
-create table users ( userid int NOT NULL AUTO_INCREMENT, username varchar(255) NOT NULL, password varchar(255) NOT NULL, isadmin bool, PRIMARY KEY (userid));
-create table grades ( gradeid int NOT NULL AUTO_INCREMENT, name varchar(255) NOT NULL, surname varchar(255) NOT NULL, subject varchar(255) NOT NULL, grade varchar(64), PRIMARY KEY(gradeid) );
-create table notes ( noteid int NOT NULL AUTO_INCREMENT, text varchar(1024) NOT NULL, PRIMARY KEY (noteid));
+create table users ( 
+	userid int NOT NULL AUTO_INCREMENT,
+	username varchar(255) NOT NULL,
+	password varchar(255) NOT NULL,
+	isadmin bool,
+	name varchar(255) NOT NULL,
+	surname varchar(255) NOT NULL,
+	PRIMARY KEY (userid)
+	);
 
-insert into users (username, password, isadmin) values ("professore_matematica@gmail.com", "admin1", 1);
-insert into users (username, password, isadmin) values ("professore_filosofia@gmail.com", "admin2", 1);
-insert into users (username, password, isadmin) values ("professore_arte@gmail.com", "admin3", 1);
-insert into users (username, password, isadmin) values ("pietro@spadaccino.com", "ciaociao", 0);
-insert into users (username, password, isadmin) values ("pierluigi@locatelli.com", "ciaociao", 0);
-insert into users (username, password, isadmin) values ("andrea@lacava.com", "ciaociao", 0);
+create table grades (
+	gradeid int NOT NULL AUTO_INCREMENT,
+	username varchar(255) NOT NULL,
+	subject varchar(255) NOT NULL,
+	grade varchar(64),
+	PRIMARY KEY(gradeid)
+	);
 
-insert into grades (name, surname, subject, grade) values ("Pierluigi", "Locatelli", "Scienze", "5+");
-insert into grades (name, surname, subject, grade) values ("Pierluigi", "Locatelli", "Latino", "8");
-insert into grades (name, surname, subject, grade) values ("Pierluigi", "Locatelli", "Italiano", "3");
-insert into grades (name, surname, subject, grade) values ("Pierluigi", "Locatelli", "Matematica", "7+");
-insert into grades (name, surname, subject, grade) values ("Andrea", "Lacava", "Scienze", "7");
-insert into grades (name, surname, subject, grade) values ("Andrea", "Lacava", "Latino", "6--");
-insert into grades (name, surname, subject, grade) values ("Andrea", "Lacava", "Italiano", "8+");
-insert into grades (name, surname, subject, grade) values ("Andrea", "Lacava", "Matematica", "4-");
-insert into grades (name, surname, subject, grade) values ("Pietro", "Spadaccino", "Scienze", "7+");
-insert into grades (name, surname, subject, grade) values ("Pietro", "Spadaccino", "Latino", "4½");
-insert into grades (name, surname, subject, grade) values ("Pietro", "Spadaccino", "Italiano", "5");
-insert into grades (name, surname, subject, grade) values ("Pietro", "Spadaccino", "Matematica", "8");
+create table notes (
+	noteid int NOT NULL AUTO_INCREMENT,
+	text varchar(1024) NOT NULL,
+	PRIMARY KEY (noteid)
+	);
+
+insert into users (username, password, isadmin, name, surname) values ("professore_matematica@gmail.com", "admin1", 1, "Professore", "Uno");
+insert into users (username, password, isadmin, name, surname) values ("professore_filosofia@gmail.com", "admin2", 1, "Professore", "Due");
+insert into users (username, password, isadmin, name, surname) values ("professore_arte@gmail.com", "admin3", 1, "Professore", "Tre");
+insert into users (username, password, isadmin, name, surname) values ("pietro@spadaccino.com", "ciaociao", 0, "Pietro", "Spadaccino");
+insert into users (username, password, isadmin, name, surname) values ("pierluigi@locatelli.com", "ciaociao", 0, "Pierluigi", "Locatelli");
+insert into users (username, password, isadmin, name, surname) values ("andrea@lacava.com", "ciaociao", 0, "Andrea", "Lacava");
+
+insert into grades (username, subject, grade) values ("pierluigi@locatelli.com", "Scienze", "5+");
+insert into grades (username, subject, grade) values ("pierluigi@locatelli.com", "Latino", "8");
+insert into grades (username, subject, grade) values ("pierluigi@locatelli.com", "Italiano", "3");
+insert into grades (username, subject, grade) values ("pierluigi@locatelli.com", "Matematica", "7+");
+insert into grades (username, subject, grade) values ("andrea@lacava.com", "Scienze", "7");
+insert into grades (username, subject, grade) values ("andrea@lacava.com", "Latino", "6--");
+insert into grades (username, subject, grade) values ("andrea@lacava.com", "Italiano", "8+");
+insert into grades (username, subject, grade) values ("andrea@lacava.com", "Matematica", "4-");
+insert into grades (username, subject, grade) values ("pietro@spadaccino.com", "Scienze", "7+");
+insert into grades (username, subject, grade) values ("pietro@spadaccino.com", "Latino", "4½");
+insert into grades (username, subject, grade) values ("pietro@spadaccino.com", "Italiano", "5");
+insert into grades (username, subject, grade) values ("pietro@spadaccino.com", "Matematica", "8");
 
 insert into notes (text) values ("Giovedì la classe entrerà in seconda ora perchè manca la prof di inglese.");
 insert into notes (text) values ("Sabato in terza ora compito di italiano.");
