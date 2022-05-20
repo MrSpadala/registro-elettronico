@@ -61,8 +61,8 @@
             Voti:
             <table id="grades">
                 <tr>
-                    <th>Subject</th>
-                    <th>Grade</th>
+                    <th>Materia</th>
+                    <th>Voto</th>
                 </tr>
             </table>
         </div>
@@ -83,7 +83,7 @@
             let response = await fetch('/home_page_infos')
             let jsonBody = await response.json()
             let grades_table = document.getElementById('grades')
-            document.getElementById('username').innerText = jsonBody.user.username
+            document.getElementById('hello_username').innerText = jsonBody.user.username
             document.getElementById('hello_name').innerText = jsonBody.user.name
             document.getElementById('hello_surname').innerText = jsonBody.user.surname
             document.getElementById('admin').innerText = jsonBody.user.admin ? "You are admin" : ""
