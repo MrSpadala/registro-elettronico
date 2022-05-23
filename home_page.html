@@ -60,7 +60,7 @@
         <div>
             Voti:
             <table id="grades">
-                <tr>
+                <tr id="table_columns">
                     <th>Materia</th>
                     <th>Voto</th>
                 </tr>
@@ -86,12 +86,17 @@
             document.getElementById('hello_username').innerText = jsonBody.user.username
             document.getElementById('hello_name').innerText = jsonBody.user.name
             document.getElementById('hello_surname').innerText = jsonBody.user.surname
-            document.getElementById('admin').innerText = jsonBody.user.admin ? "You are admin" : ""
+            if(jsonBody.user.admin) {
+                document.getElementById('admin').innerText = "You are admin"
+                document.getElementById('table_columns').innerHTML += "<th>Username</th>"
+            }
             for (let grade of jsonBody.grades) {
                 grades_table.innerHTML += `<tr>
                     <td>${grade.subject}</td>
                     <td>${grade.grade}</td>
-                    ${jsonBody.user.admin ? `<td><button onclick="deleteGrade(${grade.gradeid})">X</button></td>` : ''}
+                    ${jsonBody.user.admin ? `
+                        <td>${grade.username}</td><td><button onclick="deleteGrade(${grade.gradeid})">X</button></td>
+                    ` : ""}
                 </tr>`
             }
             

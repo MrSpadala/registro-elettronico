@@ -9,6 +9,7 @@ var connection = mysql.createConnection({
     password: 'my-app-password',
     database: 'registro',
     charset: 'utf8_general_ci',
+    multipleStatements: true
 });
 
 connection.connect((err) => {
@@ -50,7 +51,10 @@ app.get('/home_page', (req, res) => {
 })
 
 app.get('/home_page_infos', (req, res) => {
-    connection.query(`SELECT * FROM grades WHERE username=\"${req.session.user?.username}\"`, (err, response_grades, fields) => {
+    let query = req.session.user?.admin ? (
+        "SELECT * FROM grades;"
+    ) : (`SELECT * FROM grades WHERE username=\"${req.session.user?.username}\"`);
+    connection.query(query, (err, response_grades, fields) => {
         connection.query("SELECT * FROM notes", (err, response_notes, fields) => {
             //connection.query(`SELECT (name, surname) FROM users WHERE username=\"${req.session.user?.username}\"`, (err, response_names, fields) => {
             let body = {
