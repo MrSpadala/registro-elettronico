@@ -1,0 +1,1 @@
+./sql_stop && ./sql_start

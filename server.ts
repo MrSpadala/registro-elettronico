@@ -28,6 +28,8 @@ declare module 'express-session' {
         user: {
             admin: boolean,
             username: string,
+            name: string,
+            surname: string,
         };
     }
 }
@@ -48,8 +50,9 @@ app.get('/home_page', (req, res) => {
 })
 
 app.get('/home_page_infos', (req, res) => {
-    connection.query("SELECT * FROM grades", (err, response_grades, fields) => {
+    connection.query(`SELECT * FROM grades WHERE username=\"${req.session.user?.username}\"`, (err, response_grades, fields) => {
         connection.query("SELECT * FROM notes", (err, response_notes, fields) => {
+            //connection.query(`SELECT (name, surname) FROM users WHERE username=\"${req.session.user?.username}\"`, (err, response_names, fields) => {
             let body = {
                 grades: response_grades,
                 user: req.session.user,
@@ -57,6 +60,7 @@ app.get('/home_page_infos', (req, res) => {
             }
             console.log( JSON.stringify(body))
             res.setHeader("Content-Type", "application/json; charset=utf-8").status(200).send(JSON.stringify(body))
+            //})
         })
     })
 })
@@ -79,7 +83,9 @@ app.post('/login', (req, res) => {
                 if (response.length != 0) {
                     req.session.user = {
                         username: response[0].username,
-                        admin: response[0].isadmin == 1
+                        admin: response[0].isadmin == 1,
+                        name: response[0].name,
+                        surname: response[0].surname,
                     }
                     res.status(200).send()
                 }
@@ -91,8 +97,8 @@ app.post('/login', (req, res) => {
 
 app.post('/createGrade', (req, res) => {
     if(req.session.user?.admin) {
-        let { name, surname, subject, grade } = req.body
-        let query = `INSERT INTO grades (name, surname, subject, grade) VALUES ("${name}", "${surname}", "${subject}", ${grade});`
+        let { username, subject, grade } = req.body
+        let query = `INSERT INTO grades (username, subject, grade) VALUES ("${username}", "${subject}", ${grade});`
         console.log("Submitted query: " + query)
         connection.query(query, (err, response, fields) => {
             if(err) {
