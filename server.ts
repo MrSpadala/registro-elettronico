@@ -22,6 +22,9 @@ app.use(session({
     secret: 'my-secret',
     resave: false,
     saveUninitialized: false,
+    cookie: {
+        httpOnly: false,
+    }
 }))
 
 declare module 'express-session' {
@@ -33,6 +36,24 @@ declare module 'express-session' {
             surname: string,
         };
     }
+}
+
+const CLEAN_INPUTS = false
+
+function sanitizeXSS(s: string) {
+    s = s.split("&").join('&amp;')
+    s = s.split('"').join('&quot;')
+    s = s.split("'").join('&#39;')
+    s = s.split("<").join('&lt;')
+    s = s.split(">").join('&gt;')
+    s = s.split("/").join('&#x2F;')
+    return s
+}
+
+function sanitizeSQL(s: string) {
+    s = s.split('"').join('\\\"')
+    s = s.split("'").join("\\\'")
+    return s
 }
 
 app.use((req, res, next) => {
@@ -71,9 +92,13 @@ app.get('/home_page_infos', (req, res) => {
 
 
 app.post('/login', (req, res) => {
-    const { name, password } = req.body
+    let { name, password } = req.body
     if (!name || !password) res.status(400).send("Missing username or password!")
     else if (req.session.user == undefined) {
+        if(CLEAN_INPUTS) {
+            name = sanitizeSQL(name)
+            password = sanitizeSQL(password)
+        }
         let query = `SELECT * FROM users WHERE username=\"${name}\" AND password=\"${password}\";`
         console.log("Submitted query: " + query)
         connection.query(query, (err, response, fields) => {
@@ -156,7 +181,11 @@ app.delete('/logout', (req, res) => {
 
 app.post('/createNote', (req, res) => {
     if(req.session.user?.admin) {
-        let query = `INSERT INTO notes (text) VALUES ("${req.body.note}");`
+        let {note} = req.body
+        if(CLEAN_INPUTS) {
+            note = sanitizeXSS(note)
+        }
+        let query = `INSERT INTO notes (text) VALUES ("${note}");`
         console.log("Submitted query: " + query)
         connection.query(query, (err, response, fields) => {
             if(err) {
