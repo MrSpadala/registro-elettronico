@@ -74,7 +74,7 @@ app.post('/login', (req, res) => {
     const { name, password } = req.body
     if (!name || !password) res.status(400).send("Missing username or password!")
     else if (req.session.user == undefined) {
-        let query = `SELECT * FROM users WHERE username=\"${name}\" AND password=\"${password}\"`
+        let query = `SELECT * FROM users WHERE username=\"${name}\" AND password=\"${password}\";`
         console.log("Submitted query: " + query)
         connection.query(query, (err, response, fields) => {
             //console.log(fields)
@@ -83,7 +83,10 @@ app.post('/login', (req, res) => {
                 res.status(400).send("DB error")
             }
             else {
-                //console.log(response)
+                if(response.length > 0 && typeof response[0].length == "number") {
+                    response = response[0]
+                }
+                console.log(response)
                 if (response.length != 0) {
                     req.session.user = {
                         username: response[0].username,
