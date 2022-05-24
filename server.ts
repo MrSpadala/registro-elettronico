@@ -38,7 +38,7 @@ declare module 'express-session' {
     }
 }
 
-const CLEAN_INPUTS = false
+const CLEAN_INPUTS = true
 
 function sanitizeXSS(s: string) {
     s = s.split("&").join('&amp;')
@@ -57,7 +57,7 @@ function sanitizeSQL(s: string) {
 }
 
 app.use((req, res, next) => {
-    let allowed_without_session = ["/", "/login"]
+    let allowed_without_session = ["/", "/login", "/tests/test_js", "/tests/test_js_injection", "/tests/hello_world"]
     if ((!req.session.user && allowed_without_session.includes(req.url)) || req.session.user) next()
     else res.redirect("/")
 })
@@ -65,6 +65,18 @@ app.use((req, res, next) => {
 app.get('/', (req, res) => {
     if (req.session.user) res.redirect('/home_page')
     else res.status(200).sendFile(join(__dirname, 'login.html'))
+})
+
+app.get('/tests/test_js', (req, res) => {
+    res.status(200).sendFile(join(__dirname, 'html_tests/test_js.html'))
+})
+
+app.get('/tests/test_js_injection', (req, res) => {
+    res.status(200).sendFile(join(__dirname, 'html_tests/test_js_injection.html'))
+})
+
+app.get('/tests/hello_world', (req, res) => {
+    res.status(200).sendFile(join(__dirname, 'html_tests/test.html'))
 })
 
 app.get('/home_page', (req, res) => {
@@ -75,6 +87,7 @@ app.get('/home_page_infos', (req, res) => {
     let query = req.session.user?.admin ? (
         "SELECT * FROM grades;"
     ) : (`SELECT * FROM grades WHERE username=\"${req.session.user?.username}\"`);
+    console.log(query)
     connection.query(query, (err, response_grades, fields) => {
         connection.query("SELECT * FROM notes", (err, response_notes, fields) => {
             //connection.query(`SELECT (name, surname) FROM users WHERE username=\"${req.session.user?.username}\"`, (err, response_names, fields) => {
@@ -83,7 +96,7 @@ app.get('/home_page_infos', (req, res) => {
                 user: req.session.user,
                 notes: response_notes
             }
-            console.log( JSON.stringify(body))
+            //console.log( JSON.stringify(body))
             res.setHeader("Content-Type", "application/json; charset=utf-8").status(200).send(JSON.stringify(body))
             //})
         })
@@ -111,7 +124,7 @@ app.post('/login', (req, res) => {
                 if(response.length > 0 && typeof response[0].length == "number") {
                     response = response[0]
                 }
-                console.log(response)
+                //console.log(response)
                 if (response.length != 0) {
                     req.session.user = {
                         username: response[0].username,
