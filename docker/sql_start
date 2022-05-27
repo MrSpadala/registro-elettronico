@@ -4,8 +4,8 @@ docker run --rm -d --network host -e MYSQL_ROOT_PASSWORD=cykablyat --name regist
 
 # initialize sql records
 echo "Copying SQL commands to dest..."
-docker cp sql_cmds registro_sql:/
-docker cp my.cnf registro_sql:/etc/my.cnf
+docker cp docker/sql_cmds registro_sql:/
+docker cp docker/my.cnf registro_sql:/etc/my.cnf
 docker exec -it registro_sql bash -c "chmod 644 /etc/my.cnf"
 
 # loop until the container is started
