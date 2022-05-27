@@ -1,3 +1,11 @@
+/**
+ * Questo è il codice utilizzato come server del registro elettronico vulnerabile a XSS e SQL injections visto durante la lezione.
+ * È scritto in javascript e ha bisogno di nodejs per essere eseguito. 
+ * Per salvarsi i dati si appoggia ad un database MySQL che gira su localhost.
+ * 
+ * Per connettersi, una volta avviato il database ed il server, basta aprire un browser e scrivere nella barra superiore http://localhost:8080/
+ */
+
 import express from 'express';
 import mysql from 'mysql';
 import session from 'express-session'
@@ -38,8 +46,19 @@ declare module 'express-session' {
     }
 }
 
-const CLEAN_INPUTS = true
 
+/**
+ * DISCLAIMER: Queste funzioni sono una versione estremamente semplificata e poco efficiente dei veri algoritmi per sanificare 
+ * l'input di un utente da possibili SQL injection o XSS. Non usate queste funzioni per programmi o servizi che volete esporre
+ * su internet perché offrono una protezione di base. Usate sempre librerie testate e considerate sicure da milioni di programmatori.
+ * 
+ * In breve, non reinventate la ruota, soprattutto quando si parla di sicurezza.
+ * 
+ * Un paio di link utili:
+ * https://docs.microsoft.com/en-us/sql/relational-databases/security/sql-injection?view=sql-server-ver16
+ * https://github.com/leizongmin/js-xss
+ */
+const CLEAN_INPUTS = true
 function sanitizeXSS(s: string) {
     s = s.split("&").join('&amp;')
     s = s.split('"').join('&quot;')
@@ -89,17 +108,20 @@ app.get('/home_page_infos', (req, res) => {
     ) : (`SELECT * FROM grades WHERE username=\"${req.session.user?.username}\"`);
     console.log(query)
     connection.query(query, (err, response_grades, fields) => {
-        connection.query("SELECT * FROM notes", (err, response_notes, fields) => {
-            //connection.query(`SELECT (name, surname) FROM users WHERE username=\"${req.session.user?.username}\"`, (err, response_names, fields) => {
-            let body = {
-                grades: response_grades,
-                user: req.session.user,
-                notes: response_notes
-            }
-            //console.log( JSON.stringify(body))
-            res.setHeader("Content-Type", "application/json; charset=utf-8").status(200).send(JSON.stringify(body))
-            //})
-        })
+        if(err) throw err
+        else {
+            connection.query("SELECT * FROM notes", (err, response_notes, fields) => {
+                if(err) throw err
+                else {
+                    let body = {
+                        grades: response_grades,
+                        user: req.session.user,
+                        notes: response_notes
+                    }
+                    res.setHeader("Content-Type", "application/json; charset=utf-8").status(200).send(JSON.stringify(body))
+                }
+            })
+        }
     })
 })
 
