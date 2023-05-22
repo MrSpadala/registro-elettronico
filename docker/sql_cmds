@@ -53,4 +53,4 @@ insert into grades (username, subject, grade) values ("pietro@spadaccino.com", "
 
 insert into notes (text) values ("Giovedì la classe entrerà in seconda ora perchè manca la prof di inglese.");
 insert into notes (text) values ("Sabato in terza ora compito di italiano.");
-insert into notes (text) values ("il 03/06/2022 la classe sarà in gita a Civitavecchia");
+insert into notes (text) values ("il 03/06/2023 la classe sarà in gita a Civitavecchia");

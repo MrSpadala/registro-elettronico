@@ -9,5 +9,8 @@
     "express-session": "^1.17.2",
     "mysql": "^2.18.1",
     "sqlite3": "^5.0.8"
+  },
+  "devDependencies": {
+    "typescript": "^5.0.4"
   }
 }

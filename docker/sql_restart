@@ -1,1 +1,1 @@
-./sql_stop && ./sql_start
+docker/sql_stop && docker/sql_start

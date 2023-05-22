@@ -58,7 +58,7 @@ declare module 'express-session' {
  * https://docs.microsoft.com/en-us/sql/relational-databases/security/sql-injection?view=sql-server-ver16
  * https://github.com/leizongmin/js-xss
  */
-const CLEAN_INPUTS = true
+const CLEAN_INPUTS = false
 function sanitizeXSS(s: string) {
     s = s.split("&").join('&amp;')
     s = s.split('"').join('&quot;')
@@ -106,7 +106,7 @@ app.get('/home_page_infos', (req, res) => {
     let query = req.session.user?.admin ? (
         "SELECT * FROM grades;"
     ) : (`SELECT * FROM grades WHERE username=\"${req.session.user?.username}\"`);
-    console.log(query)
+    console.log("Submitted query: " + query)
     connection.query(query, (err, response_grades, fields) => {
         if(err) throw err
         else {

@@ -1,6 +1,6 @@
-/* <img src=\"wad\" onerror=\"alert('ciao a tutti')\" /> */
-/* <img src=\"wad\" onerror=\"(() => {let a = 10;a += 50;console.log(a);})()\" /> */
-/* <img src=\"wad\" onerror=\"
+/* <img src=\"immagine_finta.jpg\" onerror=\"alert('ciao a tutti')\" /> */
+/* <img src=\"immagine_finta.jpg\" onerror=\"(() => {let a = 10;a += 50;console.log(a);})()\" /> */
+/* <img src=\"immagine_finta.jpg\" onerror=\"
 
 (() => {
     let table = document.getElementById('grades');
